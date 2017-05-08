@@ -11,22 +11,22 @@ struct Series {
     3: Vector y;
 }
 
-struct Chart {
-    1: string title;
-    2: string xAxisTitle;
-    3: string yAxisTitle;
-    4: list<Series> series;
-}
-
 struct AxisInfo {
     1: string type = "auto";
     2: double minimum = 0;
     3: double maximum = 30;
+    4: string title;
+}
+
+struct Chart {
+    1: string title;
+    2: AxisInfo xAxis;
+    3: AxisInfo yAxis;
+    4: list<Series> series;
 }
 
 struct RealTimeChartRequest {
-    1: AxisInfo xAxis;
-    2: AxisInfo yAxis;
+    1: bool dummy;
 }
 
 struct RealTimeChartResponse {

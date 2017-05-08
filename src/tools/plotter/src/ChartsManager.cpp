@@ -170,8 +170,37 @@ bool ChartsManager::initializeChart(const Chart& chart,std::shared_ptr<ChartsMan
 
     // Create default axes after all series have been added
     newChart->chart()->createDefaultAxes();
-    newChart->chart()->axisX()->setTitleText(chart.xAxisTitle.c_str());
-    newChart->chart()->axisY()->setTitleText(chart.yAxisTitle.c_str());
+
+    //set axes
+    chartInfo->m_xAxis.min = chart.xAxis.minimum;
+    chartInfo->m_xAxis.max = chart.xAxis.maximum;
+
+    if (chart.xAxis.type == "auto")
+        chartInfo->m_xAxis.axisType = ChartInfo::Axis::AxisTypeAuto;
+    else if (chart.xAxis.type == "dyn") {
+        chartInfo->m_xAxis.axisType = ChartInfo::Axis::AxisTypeDynamic;
+    } else {
+        chartInfo->m_xAxis.axisType = ChartInfo::Axis::AxisTypeFixed;
+        QVariant min = QVariant(chartInfo->m_xAxis.min);
+        QVariant max = QVariant(chartInfo->m_xAxis.max);
+        newChart->chart()->axisX()->setRange(min, max);
+    }
+
+    chartInfo->m_yAxis.min = chart.yAxis.minimum;
+    chartInfo->m_yAxis.max = chart.yAxis.maximum;
+    if (chart.yAxis.type == "auto")
+        chartInfo->m_yAxis.axisType = ChartInfo::Axis::AxisTypeAuto;
+    else if (chart.yAxis.type == "dyn") {
+        chartInfo->m_yAxis.axisType = ChartInfo::Axis::AxisTypeDynamic;
+    } else {
+        chartInfo->m_yAxis.axisType = ChartInfo::Axis::AxisTypeFixed;
+        QVariant min = QVariant(chartInfo->m_yAxis.min);
+        QVariant max = QVariant(chartInfo->m_yAxis.max);
+        newChart->chart()->axisY()->setRange(min, max);
+    }
+
+    newChart->chart()->axisX()->setTitleText(chart.xAxis.title.c_str());
+    newChart->chart()->axisY()->setTitleText(chart.yAxis.title.c_str());
 
 
     // now assign the chart to the window (the window takes ownership
@@ -197,28 +226,6 @@ std::shared_ptr<ChartsManager::RealTimeChartInfo> ChartsManager::createNewRealTi
 {
     std::shared_ptr<RealTimeChartInfo> chartInfo = std::shared_ptr<RealTimeChartInfo>(new RealTimeChartInfo(id));
     initializeChart(chart, chartInfo);
-
-
-    //Additional info
-    if (chartAddInfo.xAxis.type == "auto")
-        chartInfo->m_xAxis.axisType = ChartInfo::Axis::AxisTypeAuto;
-    else if (chartAddInfo.xAxis.type == "dyn") {
-        chartInfo->m_xAxis.axisType = ChartInfo::Axis::AxisTypeDynamic;
-    } else {
-        chartInfo->m_xAxis.axisType = ChartInfo::Axis::AxisTypeFixed;
-    }
-    chartInfo->m_xAxis.min = chartAddInfo.xAxis.minimum;
-    chartInfo->m_xAxis.max = chartAddInfo.xAxis.maximum;
-
-    if (chartAddInfo.yAxis.type == "auto")
-        chartInfo->m_yAxis.axisType = ChartInfo::Axis::AxisTypeAuto;
-    else if (chartAddInfo.yAxis.type == "dyn") {
-        chartInfo->m_yAxis.axisType = ChartInfo::Axis::AxisTypeDynamic;
-    } else {
-        chartInfo->m_yAxis.axisType = ChartInfo::Axis::AxisTypeFixed;
-    }
-    chartInfo->m_yAxis.min = chartAddInfo.yAxis.minimum;
-    chartInfo->m_yAxis.max = chartAddInfo.yAxis.maximum;
 
     //get x axis
     using namespace QtCharts;
