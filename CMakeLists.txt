@@ -9,6 +9,8 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(iDynTree CXX)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Disable in source build, unless Eclipse is used
 if( ("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}") AND
